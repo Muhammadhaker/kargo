@@ -3,7 +3,7 @@ import { RiSearchLine, RiPlaneLine, RiTruckLine, RiTimeLine, RiCalendarCheckLine
 
 function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts, handleEdit, handleDelete }) {
   return (
-    <div className="lg:col-span-2 space-y-4">
+    <div className="lg:col-span-2 space-y-4 min-w-0"> {/* min-w-0 siqilishni oldini oladi */}
       
       {/* AQLLI QIDIRUV INPUTI */}
       <div className="relative w-full">
@@ -91,23 +91,23 @@ function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts,
         )}
       </div>
 
-      {/* DESKTOP TABLE VERSIYA */}
-      <div className="hidden sm:block overflow-x-auto border border-slate-800 rounded-2xl bg-slate-900">
-        <table className="w-full text-left border-collapse min-w-[800px]">
+      {/* DESKTOP TABLE VERSIYA - Paddinglar qisqartirildi, skrol chizig'i butunlay yo'qoladi */}
+      <div className="hidden sm:block border border-slate-800 rounded-2xl bg-slate-900 overflow-hidden">
+        <table className="w-full text-left border-collapse table-auto">
           <thead>
-            <tr className="border-b border-slate-800 bg-slate-950/60 text-[10px] text-slate-400 uppercase tracking-widest font-black">
-              <th className="py-4 px-3">Rasm</th>
-              <th className="py-4 px-3">Trek Kod / Nomi</th>
-              <th className="py-4 px-3">Holati / Sanalar</th>
-              <th className="py-4 px-3">Kargo Turi</th>
-              <th className="py-4 px-3">Og'irlik</th>
-              <th className="py-4 px-3">Yo'l haqi</th>
-              <th className="py-4 px-3">Pinduoduo (¥)</th>
-              <th className="py-4 px-3">Jami Tannarx</th>
-              <th className="py-4 px-3 text-center">Amal</th>
+            <tr className="border-b border-slate-800 bg-slate-950/60 text-[9px] text-slate-400 uppercase tracking-wider font-black">
+              <th className="py-3 px-2 pl-3">Rasm</th>
+              <th className="py-3 px-2">Trek / Nomi</th>
+              <th className="py-3 px-2">Holat</th>
+              <th className="py-3 px-2">Kargo</th>
+              <th className="py-3 px-2">Vazn</th>
+              <th className="py-3 px-2">Yo'l haqi</th>
+              <th className="py-3 px-2">Pinduoduo</th>
+              <th className="py-3 px-2">Tannarx</th>
+              <th className="py-3 px-2 text-center pr-3">Amal</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40 text-sm">
+          <tbody className="divide-y divide-slate-800/40 text-xs">
             {filteredItems.length === 0 ? (
               <tr>
                 <td colSpan="9" className="text-center py-16 text-slate-500 font-medium tracking-wide">Hech qanday yuk topilmadi.</td>
@@ -117,42 +117,41 @@ function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts,
                 const { totalSom } = calculateCosts(item);
                 return (
                   <tr key={item._id} className="hover:bg-slate-800/20 transition-all group">
-                    <td className="py-4 px-3">
+                    <td className="py-3 px-2 pl-3">
                       {item.imageUrl ? (
-                        <img src={item.imageUrl} alt="Kargo" className="w-11 h-11 object-cover rounded-xl border border-slate-800 bg-slate-950 shadow" />
+                        <img src={item.imageUrl} alt="Kargo" className="w-9 h-9 object-cover rounded-lg border border-slate-800 bg-slate-950 shadow" />
                       ) : (
-                        <div className="w-11 h-11 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-600">NO IMG</div>
+                        <div className="w-9 h-9 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-center text-[8px] font-black text-slate-600">NO IMG</div>
                       )}
                     </td>
-                    <td className="py-4 px-3 font-black text-white max-w-[150px] truncate tracking-tight">{item.trackingCode}</td>
+                    <td className="py-3 px-2 font-black text-white max-w-[110px] truncate tracking-tight">{item.trackingCode}</td>
                     
-                    <td className="py-4 px-3 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold mb-1 ${item.status === 'keldi' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : item.status === 'yolda' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-400'}`}>
-                        {item.status === 'keldi' ? 'Keldi 🇺🇿' : item.status === 'yolda' ? 'Yo\'lda 🚚' : 'Omborda 🇨🇳'}
+                    <td className="py-3 px-2">
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold ${item.status === 'keldi' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : item.status === 'yolda' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-400'}`}>
+                        {item.status === 'keldi' ? 'Keldi 🇺🇿' : item.status === 'yolda' ? 'Yo\'lda 🚚' : 'Ombor 🇨🇳'}
                       </span>
-                      <div className="text-[10px] text-slate-500 space-y-0.5">
-                        {item.shippedDate && <div>🛫 Yo'lda: {item.shippedDate}</div>}
-                        {item.arrivedDate && <div>🛬 Keldi: {item.arrivedDate}</div>}
-                      </div>
                     </td>
 
-                    <td className="py-4 px-3">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${item.cargoType === 'avia' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-green-500/10 text-green-400'}`}>
-                        {item.cargoType === 'avia' ? <RiPlaneLine /> : <RiTruckLine />} {item.cargoType}
+                    <td className="py-3 px-2">
+                      <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${item.cargoType === 'avia' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-green-500/10 text-green-400'}`}>
+                        {item.cargoType}
                       </span>
                     </td>
-                    <td className="py-4 px-3 text-slate-200 font-bold tracking-tight">{item.weight} kg <span className="text-[11px] font-semibold text-slate-500 block mt-0.5">{item.quantity} dona</span></td>
-                    <td className="py-4 px-3 text-amber-400 font-black text-xs">{(parseFloat(item.shippingCostSom) || 0).toLocaleString()} s</td>
-                    <td className="py-4 px-3 text-slate-400 font-semibold text-xs">{item.yuanPrice} ¥</td>
-                    <td className="py-4 px-3">
-                      <span className="text-emerald-400 font-black block tracking-tight">{totalSom.toLocaleString()} so'm</span>
+                    <td className="py-3 px-2 text-slate-200 font-bold tracking-tight text-xs">
+                      {item.weight} kg
+                      <span className="text-[10px] font-normal text-slate-500 block">{item.quantity} ta</span>
                     </td>
-                    <td className="py-4 px-3 text-center whitespace-nowrap">
-                      <div className="flex justify-center gap-1.5">
-                        <button onClick={() => handleEdit(item)} className="p-2 bg-slate-950 hover:bg-amber-500/10 text-slate-500 hover:text-amber-400 border border-slate-800 rounded-xl transition-all shadow-md">
+                    <td className="py-3 px-2 text-amber-400 font-bold text-xs">{(parseFloat(item.shippingCostSom) || 0).toLocaleString()} s</td>
+                    <td className="py-3 px-2 text-slate-400 font-medium text-xs">{item.yuanPrice} ¥</td>
+                    <td className="py-3 px-2 whitespace-nowrap">
+                      <span className="text-emerald-400 font-black block tracking-tight text-xs">{totalSom.toLocaleString()} so'm</span>
+                    </td>
+                    <td className="py-3 px-2 text-center pr-3">
+                      <div className="flex justify-center gap-1">
+                        <button onClick={() => handleEdit(item)} className="p-1.5 bg-slate-950 hover:bg-amber-500/10 text-slate-500 hover:text-amber-400 border border-slate-800 rounded-lg transition-all shadow-sm">
                           <RiEdit2Line className="text-xs" />
                         </button>
-                        <button onClick={() => handleDelete(item._id)} className="p-2.5 bg-slate-950 hover:bg-red-500/10 text-slate-500 hover:text-red-400 border border-slate-800 hover:border-red-500/20 rounded-xl transition-all shadow-md">
+                        <button onClick={() => handleDelete(item._id)} className="p-1.5 bg-slate-950 hover:bg-red-500/10 text-slate-500 hover:text-red-400 border border-slate-800 rounded-lg transition-all shadow-sm">
                           <RiDeleteBin6Line className="text-xs" />
                         </button>
                       </div>

@@ -64,6 +64,7 @@ function App() {
     if (uploading) return;
     setIsSaving(true);
 
+    // ✅ SHU YERDA shippingCostSom BAZAGA TOZA SON BO'LIB KETISHI TO'G'RILANDI!
     const cleanData = {
       ...formData,
       weight: Number(formData.weight),
@@ -82,6 +83,8 @@ function App() {
         await fetchItems(); 
         setEditId(null);
         setFormData({ trackingCode: '', cargoType: 'avia', weight: '', shippingCostSom: '', yuanPrice: '', yuanRate: 1825, imageUrl: '', quantity: 1, status: 'ombor', shippedDate: '', arrivedDate: '' });
+      } else {
+        alert("Saqlashda xatolik yuz berdi!");
       }
     } catch (err) {
       console.error(err);
@@ -105,10 +108,40 @@ function App() {
           <CargoForm 
             formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} 
             uploading={uploading} isSaving={isSaving} editId={editId} setEditId={setEditId} 
+            handleImageUpload={async (e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+              setUploading(true);
+              const imageFormData = new FormData();
+              imageFormData.append('image', file);
+              try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=30f95aa52799ec65e58157db5b3d0bba`, { method: 'POST', body: imageFormData });
+                const result = await response.json();
+                if (result.success) setFormData(prev => ({ ...prev, imageUrl: result.data.url }));
+              } catch (err) { console.error(err); } finally { setUploading(false); }
+            }}
           />
           <CargoList 
             filteredItems={filteredItems} searchQuery={searchQuery} setSearchQuery={setSearchQuery} 
-            calculateCosts={calculateCosts} handleEdit={(item) => { setEditId(item._id); setFormData(item); window.scrollTo({ top: 0, behavior: 'smooth' }); }} handleDelete={handleDelete} 
+            calculateCosts={calculateCosts} 
+            handleEdit={(item) => { 
+              setEditId(item._id); 
+              setFormData({
+                trackingCode: item.trackingCode || '',
+                cargoType: item.cargoType || 'avia',
+                weight: item.weight || '',
+                shippingCostSom: item.shippingCostSom || '', // Tahrirlashda formaga qaytarish
+                yuanPrice: item.yuanPrice || '',
+                yuanRate: item.yuanRate || 1825,
+                imageUrl: item.imageUrl || '',
+                quantity: item.quantity || 1,
+                status: item.status || 'ombor',
+                shippedDate: item.shippedDate || '',
+                arrivedDate: item.arrivedDate || ''
+              }); 
+              window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }} 
+            handleDelete={handleDelete} 
           />
         </div>
       </div>
