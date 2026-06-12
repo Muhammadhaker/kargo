@@ -3,8 +3,8 @@ import { RiPlaneLine, RiTruckLine, RiDeleteBin6Line, RiCoinsLine, RiCalculatorLi
 
 function App() {
   const [items, setItems] = useState([]);
-  const [uploading, setUploading] = useState(false); // Rasm yuklash loading holati
-  const [isSaving, setIsSaving] = useState(false);   // Bazaga saqlash loading holati
+  const [uploading, setUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);  
   const [formData, setFormData] = useState({
     trackingCode: '',
     cargoType: 'avia',
@@ -16,9 +16,7 @@ function App() {
     quantity: 1
   });
 
-  // ImgBB profilingizdan olingan shaxsiy API kalit
   const IMGBB_API_KEY = '30f95aa52799ec65e58157db5b3d0bba'; 
-
   const API_URL = '/api/kargo';
 
   useEffect(() => {
@@ -35,7 +33,6 @@ function App() {
     }
   };
 
-  // Kompyuter yoki telefondan rasm tanlanganda uni internetga yuklash
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -72,7 +69,6 @@ function App() {
     });
   };
 
-  // Forma yuborilganda hisoblash va MongoDB-ga saqlash
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (uploading) {
@@ -80,7 +76,7 @@ function App() {
       return;
     }
     
-    setIsSaving(true); // Saqlash loadingini yoqamiz
+    setIsSaving(true);
 
     const cleanData = {
       ...formData,
@@ -98,7 +94,7 @@ function App() {
       });
       
       if (res.ok) {
-        await fetchItems(); // Ro'yxatni bazadan qayta yuklab yangilash
+        await fetchItems(); 
         setFormData({
           trackingCode: '',
           cargoType: 'avia',
@@ -117,7 +113,7 @@ function App() {
       console.error("Saqlashda xatolik:", err);
       alert("Serverga ulanishda xatolik yuz berdi!");
     } finally {
-      setIsSaving(false); // Saqlash loadingini o'chiramiz
+      setIsSaving(false);
     }
   };
 
@@ -128,20 +124,29 @@ function App() {
     }
   };
 
-  // Matematik hisob-kitoblar funksiyasi (Dollar kursi: 12,200 so'm)
+  // Matematik hisob-kitoblar (Xavfsiz Number o'girmalari bilan)
   const calculateCosts = (item) => {
     const dollarRate = 12200; 
-    const itemKargoSom = item.weight * item.pricePerKg * dollarRate;
-    const itemYuanSom = item.yuanPrice * item.yuanRate;
-    const totalSom = (itemKargoSom + itemYuanSom) * item.quantity;
+    const weight = parseFloat(item.weight) || 0;
+    const pricePerKg = parseFloat(item.pricePerKg) || 0;
+    const yuanPrice = parseFloat(item.yuanPrice) || 0;
+    const yuanRate = parseFloat(item.yuanRate) || 0;
+    const quantity = parseInt(item.quantity) || 1;
+
+    const itemKargoSom = weight * pricePerKg * dollarRate;
+    const itemYuanSom = yuanPrice * yuanRate;
+    const totalSom = (itemKargoSom + itemYuanSom) * quantity;
+    
     return { itemKargoSom, itemYuanSom, totalSom };
   };
 
-  const totalWeight = items.reduce((sum, item) => sum + (item.weight * item.quantity), 0);
+  // Umumiy hisob paneli (Reduce amallari mustahkamlandi)
+  const totalWeight = items.reduce((sum, item) => sum + ((parseFloat(item.weight) || 0) * (parseInt(item.quantity) || 1)), 0);
   const totalSpend = items.reduce((sum, item) => sum + calculateCosts(item).totalSom, 0);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950">
+    // translate="no" va notranslate klassi Google Translate buzg'unchiligini srazu to'xtatadi!
+    <div translate="no" className="notranslate min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950">
       <div className="container mx-auto px-3 sm:px-4 py-6 max-w-6xl">
         
         {/* HEADER PANEL */}
@@ -169,10 +174,10 @@ function App() {
           </div>
         </header>
 
-        {/* ASOSIY MERGE GRID */}
+        {/* ASOSIY GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* EZGU FORMA */}
+          {/* FORMA */}
           <div className="bg-slate-900 border border-slate-800/80 p-5 sm:p-6 rounded-2xl h-fit">
             <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-3 uppercase tracking-wider">
               <RiCalculatorLine className="text-amber-500 text-lg" /> Yangi Yuk Qo'shish
@@ -199,52 +204,50 @@ function App() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5">Vazni (kg)</label>
-                  <input type="number" step="0.01" value={formData.weight} onChange={e => setFormData({...formData, weight: parseFloat(e.target.value) || ''})} placeholder="0.5" required className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
+                  <input type="number" step="0.01" value={formData.weight} onChange={e => setFormData({...formData, weight: e.target.value})} placeholder="0.5" required className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
                 </div>
                 <div>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5">Soni (Dona)</label>
-                  <input type="number" value={formData.quantity} onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} min="1" className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
+                  <input type="number" value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})} min="1" className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5">Narxi (Yuan)</label>
-                  <input type="number" step="0.01" value={formData.yuanPrice} onChange={e => setFormData({...formData, yuanPrice: parseFloat(e.target.value) || ''})} placeholder="26.8" required className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
+                  <input type="number" step="0.01" value={formData.yuanPrice} onChange={e => setFormData({...formData, yuanPrice: e.target.value})} placeholder="26.8" required className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
                 </div>
                 <div>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5">Yuan Kursi</label>
-                  <input type="number" value={formData.yuanRate} onChange={e => setFormData({...formData, yuanRate: parseInt(e.target.value) || 1825})} className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
+                  <input type="number" value={formData.yuanRate} onChange={e => setFormData({...formData, yuanRate: e.target.value})} className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-white rounded-xl px-4 py-3 focus:outline-none transition-all text-sm font-medium shadow-inner" />
                 </div>
               </div>
 
-              {/* RASM TANLASH TUGMASI */}
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5">Tovar Rasmi (Kompyuter / Telefondan)</label>
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-300 block mb-1.5">Tovar Rasmi</label>
                 <div className="relative">
                   <input type="file" accept="image/*" onChange={handleImageUpload} id="file-upload" className="hidden" />
                   <label htmlFor="file-upload" className={`w-full bg-slate-950 border border-dashed border-slate-700 hover:border-amber-500 rounded-xl px-4 py-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all text-slate-400 hover:text-white ${formData.imageUrl ? 'border-emerald-500/50 bg-emerald-500/5 text-emerald-400' : ''}`}>
                     {uploading ? (
                       <>
                         <RiLoader4Line className="text-xl animate-spin text-amber-500" />
-                        <span className="text-xs font-semibold">Rasm internetga yuklanyapti...</span>
+                        <span className="text-xs font-semibold">Rasm yuklanyapti...</span>
                       </>
                     ) : formData.imageUrl ? (
                       <>
                         <img src={formData.imageUrl} alt="Yuklandi" className="w-10 h-10 object-cover rounded-lg mb-1" />
-                        <span className="text-xs font-bold text-emerald-400">Rasm muvaffaqiyatli yuklandi!</span>
+                        <span className="text-xs font-bold text-emerald-400">Rasm yuklandi!</span>
                       </>
                     ) : (
                       <>
                         <RiImageAddLine className="text-2xl text-slate-500" />
-                        <span className="text-xs font-medium">Rasm tanlash uchun bosing</span>
+                        <span className="text-xs font-medium">Rasm tanlash</span>
                       </>
                     )}
                   </label>
                 </div>
               </div>
 
-              {/* AKLLI TUGMA LOADING BILAN */}
               <button 
                 type="submit" 
                 disabled={isSaving || uploading} 
@@ -253,7 +256,7 @@ function App() {
                 {isSaving ? (
                   <>
                     <RiLoader4Line className="text-base animate-spin" />
-                    Bazaga saqlanyapti...
+                    Saqlanyapti...
                   </>
                 ) : (
                   <>
@@ -265,13 +268,13 @@ function App() {
             </form>
           </div>
 
-          {/* SAQLANGAN TOVARLAR RO'YXATI */}
+          {/* LIST OMBORE */}
           <div className="lg:col-span-2 space-y-4">
             <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
               📦 Saqlangan Yuklar Ombori <span className="bg-slate-900 text-slate-400 border border-slate-800 px-2.5 py-0.5 rounded-lg text-xs font-bold">{items.length} ta</span>
             </h3>
 
-            {/* MOBIL VERSHIYA (Xiaomi 12 kabi telefonlar uchun chiroyli kartochka) */}
+            {/* MOBIL CARD VERSIYA (Xiaomi 12) */}
             <div className="block sm:hidden space-y-3">
               {items.length === 0 ? (
                 <div className="text-center py-12 bg-slate-900 border border-slate-800 rounded-2xl text-slate-500 text-sm font-medium">Hozircha kargo buyurtmalari kiritilmadi.</div>
@@ -305,7 +308,7 @@ function App() {
                         </div>
                         <div>
                           <span className="text-slate-500 block">Pinduoduo:</span>
-                          <span className="text-slate-200 font-semibold">{item.yuanPrice} ¥ ({itemYuanSom.toLocaleString()} s)</span>
+                          <span className="text-slate-200 font-semibold">{item.yuanPrice} ¥ ({itemYuanSom.toLocaleString()} so'm)</span>
                         </div>
                         <div>
                           <span className="text-slate-500 block">Umumiy Tannarx:</span>
@@ -322,7 +325,7 @@ function App() {
               )}
             </div>
 
-            {/* DESKTOP VERSIYA (Katta kompyuter ekrani uchun chiroyli keng jadval) */}
+            {/* DESKTOP TABLE VERSIYA */}
             <div className="hidden sm:block overflow-x-auto border border-slate-800 rounded-2xl bg-slate-900">
               <table className="w-full text-left border-collapse">
                 <thead>
