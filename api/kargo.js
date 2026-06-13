@@ -1,20 +1,16 @@
 import mongoose from 'mongoose';
 
-// MongoDB Ulanishi
+// 🚀 Mongoose'ning eng yangi, qulamaydigan ulanish kodi
 const connectDB = async () => {
-  if (mongoose.connections[0].readyState) return;
-  await mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  if (mongoose.connection.readyState >= 1) return;
+  await mongoose.connect(process.env.MONGODB_URI);
 };
 
-// Model Ta'rifi - pricePerKg majburiyati olib tashlandi!
 const CargoSchema = new mongoose.Schema({
   trackingCode: { type: String, required: true },
   cargoType: { type: String, enum: ['avia', 'avto'], required: true },
   weight: { type: Number, required: true },
-  shippingCostSom: { type: Number, default: 0 }, // So'mdagi yo'l haqi
+  shippingCostSom: { type: Number, default: 0 },
   yuanPrice: { type: Number, required: true },
   yuanRate: { type: Number, required: true },
   imageUrl: { type: String, default: '' },
@@ -22,12 +18,11 @@ const CargoSchema = new mongoose.Schema({
   status: { type: String, enum: ['ombor', 'yolda', 'keldi'], default: 'ombor' },
   shippedDate: { type: String, default: '' },
   arrivedDate: { type: String, default: '' },
-  date: { type: Date, default: Date.now },
+  date: { type: Date, default: Date.now }
 });
 
 const Cargo = mongoose.models.Cargo || mongoose.model('Cargo', CargoSchema);
 
-// API Handler
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -63,6 +58,8 @@ export default async function handler(req, res) {
 
     return res.status(405).json({ message: 'Metod ruxsat etilmagan' });
   } catch (error) {
+    // 🔍 Agar yana qanaqadir xato bo'lsa, uni srazu ushlab konsolga chiqaramiz
+    console.error("API Xatosi:", error);
     return res.status(500).json({ error: error.message });
   }
 }
