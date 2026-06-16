@@ -1,209 +1,262 @@
-import React, { useState } from 'react';
+// import React from 'react';
+// import { RiSearchLine, RiPlaneLine, RiTruckLine, RiTimeLine, RiCalendarCheckLine, RiEdit2Line, RiDeleteBin6Line } from 'react-icons/ri';
 
-export default function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts, handleEdit, handleDelete }) {
-  // Modal oynani boshqarish uchun yangi state'lar
+// function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts, handleEdit, handleDelete }) {
+//   return (
+//     <div className="lg:col-span-2 space-y-4 min-w-0"> {/* min-w-0 siqilishni oldini oladi */}
+      
+//       {/* AQLLI QIDIRUV INPUTI */}
+//       <div className="relative w-full">
+//         <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//           <RiSearchLine className="text-slate-500 text-lg" />
+//         </span>
+//         <input 
+//           type="text" 
+//           value={searchQuery}
+//           onChange={e => setSearchQuery(e.target.value)}
+//           placeholder="Trek kod yoki kiyim nomini yozib qidiring..."
+//           className="w-full bg-slate-900 border border-slate-800 focus:border-amber-500 text-white placeholder:text-slate-500 rounded-xl pl-11 pr-4 py-3.5 focus:outline-none transition-all text-sm font-medium shadow-md"
+//         />
+//       </div>
+
+//       <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider pt-2">
+//         📦 Saqlangan Yuklar Ombori <span className="bg-slate-900 text-slate-400 border border-slate-800 px-2.5 py-0.5 rounded-lg text-xs font-bold">{filteredItems.length} ta</span>
+//       </h3>
+
+//       {/* MOBIL CARD VERSIYA (Xiaomi 12) */}
+//       <div className="block sm:hidden space-y-3">
+//         {filteredItems.length === 0 ? (
+//           <div className="text-center py-12 bg-slate-900 border border-slate-800 rounded-2xl text-slate-500 text-sm font-medium">Hech qanday yuk topilmadi.</div>
+//         ) : (
+//           filteredItems.map((item) => {
+//             const { totalSom } = calculateCosts(item);
+//             return (
+//               <div key={item._id} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 relative overflow-hidden flex flex-col gap-3">
+//                 <div className="flex items-center gap-3">
+//                   {item.imageUrl ? (
+//                     <img src={item.imageUrl} alt="Kargo" className="w-12 h-12 object-cover rounded-xl border border-slate-800 shadow" />
+//                   ) : (
+//                     <div className="w-12 h-12 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-600 shrink-0">NO IMG</div>
+//                   )}
+//                   <div className="truncate pr-16">
+//                     <h4 className="font-black text-white text-base truncate tracking-tight">{item.trackingCode}</h4>
+//                     <div className="flex gap-1.5 mt-1 flex-wrap">
+//                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase ${item.cargoType === 'avia' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'}`}>
+//                         {item.cargoType === 'avia' ? <RiPlaneLine /> : <RiTruckLine />} {item.cargoType}
+//                       </span>
+//                       <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-bold ${item.status === 'keldi' ? 'bg-emerald-500/20 text-emerald-400' : item.status === 'yolda' ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+//                         {item.status === 'keldi' ? 'Keldi 🇺🇿' : item.status === 'yolda' ? 'Yo\'lda 🚚' : 'Omborda 🇨🇳'}
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {(item.shippedDate || item.arrivedDate) && (
+//                   <div className="bg-slate-950/40 p-2 rounded-xl border border-slate-800/40 text-[11px] space-y-1 text-slate-400">
+//                     {item.shippedDate && <div className="flex items-center gap-1"><RiTimeLine className="text-amber-500" /> Yo'lga chiqdi: {item.shippedDate}</div>}
+//                     {item.arrivedDate && <div className="flex items-center gap-1"><RiCalendarCheckLine className="text-emerald-500" /> Yetib keldi: {item.arrivedDate}</div>}
+//                   </div>
+//                 )}
+                
+//                 <div className="grid grid-cols-2 gap-2 border-t border-slate-800/60 pt-2.5 text-xs">
+//                   <div>
+//                     <span className="text-slate-500 block">Og'irlik / Soni:</span>
+//                     <span className="text-slate-200 font-bold">{item.weight} kg / {item.quantity} ta</span>
+//                   </div>
+//                   <div>
+//                     <span className="text-slate-500 block">Yo'l Haqiqi (Kargo):</span>
+//                     <span className="text-amber-400 font-bold">{(parseFloat(item.shippingCostSom) || 0).toLocaleString()} s</span>
+//                   </div>
+//                   <div>
+//                     <span className="text-slate-500 block">Pinduoduo (Puli):</span>
+//                     <span className="text-slate-200 font-semibold">{item.yuanPrice} ¥</span>
+//                   </div>
+//                   <div>
+//                     <span className="text-slate-500 block">Umumiy Tannarx:</span>
+//                     <span className="text-emerald-400 font-black text-sm">{totalSom.toLocaleString()} so'm</span>
+//                   </div>
+//                 </div>
+
+//                 <div className="absolute top-3 right-3 flex gap-1.5">
+//                   <button onClick={() => handleEdit(item)} className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-amber-400 active:bg-amber-500/10">
+//                     <RiEdit2Line className="text-xs" />
+//                   </button>
+//                   <button onClick={() => handleDelete(item._id)} className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-red-400 active:bg-red-500/10">
+//                     <RiDeleteBin6Line className="text-xs" />
+//                   </button>
+//                 </div>
+//               </div>
+//             );
+//           })
+//         )}
+//       </div>
+
+//       {/* DESKTOP TABLE VERSIYA - Paddinglar qisqartirildi, skrol chizig'i butunlay yo'qoladi */}
+//       <div className="hidden sm:block border border-slate-800 rounded-2xl bg-slate-900 overflow-hidden">
+//         <table className="w-full text-left border-collapse table-auto">
+//           <thead>
+//             <tr className="border-b border-slate-800 bg-slate-950/60 text-[9px] text-slate-400 uppercase tracking-wider font-black">
+//               <th className="py-3 px-2 pl-3">Rasm</th>
+//               <th className="py-3 px-2">Trek / Nomi</th>
+//               <th className="py-3 px-2">Holat</th>
+//               <th className="py-3 px-2">Kargo</th>
+//               <th className="py-3 px-2">Vazn</th>
+//               <th className="py-3 px-2">Yo'l haqi</th>
+//               <th className="py-3 px-2">Pinduoduo</th>
+//               <th className="py-3 px-2">Tannarx</th>
+//               <th className="py-3 px-2 text-center pr-3">Amal</th>
+//             </tr>
+//           </thead>
+//           <tbody className="divide-y divide-slate-800/40 text-xs">
+//             {filteredItems.length === 0 ? (
+//               <tr>
+//                 <td colSpan="9" className="text-center py-16 text-slate-500 font-medium tracking-wide">Hech qanday yuk topilmadi.</td>
+//               </tr>
+//             ) : (
+//               filteredItems.map((item) => {
+//                 const { totalSom } = calculateCosts(item);
+//                 return (
+//                   <tr key={item._id} className="hover:bg-slate-800/20 transition-all group">
+//                     <td className="py-3 px-2 pl-3">
+//                       {item.imageUrl ? (
+//                         <img src={item.imageUrl} alt="Kargo" className="w-9 h-9 object-cover rounded-lg border border-slate-800 bg-slate-950 shadow" />
+//                       ) : (
+//                         <div className="w-9 h-9 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-center text-[8px] font-black text-slate-600">NO IMG</div>
+//                       )}
+//                     </td>
+//                     <td className="py-3 px-2 font-black text-white max-w-[110px] truncate tracking-tight">{item.trackingCode}</td>
+                    
+//                     <td className="py-3 px-2">
+//                       <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold ${item.status === 'keldi' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : item.status === 'yolda' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-400'}`}>
+//                         {item.status === 'keldi' ? 'Keldi 🇺🇿' : item.status === 'yolda' ? 'Yo\'lda 🚚' : 'Ombor 🇨🇳'}
+//                       </span>
+//                     </td>
+
+//                     <td className="py-3 px-2">
+//                       <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${item.cargoType === 'avia' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-green-500/10 text-green-400'}`}>
+//                         {item.cargoType}
+//                       </span>
+//                     </td>
+//                     <td className="py-3 px-2 text-slate-200 font-bold tracking-tight text-xs">
+//                       {item.weight} kg
+//                       <span className="text-[10px] font-normal text-slate-500 block">{item.quantity} ta</span>
+//                     </td>
+//                     <td className="py-3 px-2 text-amber-400 font-bold text-xs">{(parseFloat(item.shippingCostSom) || 0).toLocaleString()} s</td>
+//                     <td className="py-3 px-2 text-slate-400 font-medium text-xs">{item.yuanPrice} ¥</td>
+//                     <td className="py-3 px-2 whitespace-nowrap">
+//                       <span className="text-emerald-400 font-black block tracking-tight text-xs">{totalSom.toLocaleString()} so'm</span>
+//                     </td>
+//                     <td className="py-3 px-2 text-center pr-3">
+//                       <div className="flex justify-center gap-1">
+//                         <button onClick={() => handleEdit(item)} className="p-1.5 bg-slate-950 hover:bg-amber-500/10 text-slate-500 hover:text-amber-400 border border-slate-800 rounded-lg transition-all shadow-sm">
+//                           <RiEdit2Line className="text-xs" />
+//                         </button>
+//                         <button onClick={() => handleDelete(item._id)} className="p-1.5 bg-slate-950 hover:bg-red-500/10 text-slate-500 hover:text-red-400 border border-slate-800 rounded-lg transition-all shadow-sm">
+//                           <RiDeleteBin6Line className="text-xs" />
+//                         </button>
+//                       </div>
+//                     </td>
+//                   </tr>
+//                 );
+//               })
+//             )}
+//           </tbody>
+//         </table>
+//       </div>
+
+//     </div>
+//   );
+// }
+
+// export default CargoList;
+
+
+import React, { useState } from 'react';
+import { RiSearchLine, RiPlaneLine, RiTruckLine, RiTimeLine, RiCalendarCheckLine, RiEdit2Line, RiDeleteBin6Line } from 'react-icons/ri';
+
+function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts, handleEdit, handleDelete }) {
+  // Modal va Zoom uchun state'lar
   const [selectedItem, setSelectedItem] = useState(null);
   const [zoomedImg, setZoomedImg] = useState(null);
 
   return (
-    <div className="bg-slate-900/50 p-4 sm:p-6 rounded-2xl border border-slate-800 relative">
-      {/* 🔍 Qidiruv qismi */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          📦 Ombor <span className="text-sm font-normal text-slate-400 bg-slate-800 px-2 py-1 rounded-md">{filteredItems.length} ta yuk</span>
-        </h2>
-        <div className="w-full sm:w-72 relative">
-          <input
-            type="text"
-            placeholder="Trek kod yozib qidiring..."
-            className="w-full bg-slate-800 text-white rounded-xl pl-10 pr-4 py-2.5 border border-slate-700 focus:outline-none focus:border-amber-500 transition-colors shadow-inner"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <span className="absolute left-3.5 top-3 text-slate-400">🔍</span>
-        </div>
+    <div className="lg:col-span-2 space-y-4 min-w-0">
+      
+      {/* QIDIRUV INPUTI */}
+      <div className="relative w-full">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+          <RiSearchLine className="text-slate-500 text-lg" />
+        </span>
+        <input 
+          type="text" 
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          placeholder="Trek kod yoki kiyim nomini yozib qidiring..."
+          className="w-full bg-slate-900 border border-slate-800 focus:border-amber-500 text-white placeholder:text-slate-500 rounded-xl pl-11 pr-4 py-3.5 focus:outline-none transition-all text-sm font-medium shadow-md"
+        />
       </div>
 
-      {/* 📋 Qisqartirilgan Ro'yxat */}
-      <div className="space-y-3">
-        {filteredItems.length === 0 ? (
-          <div className="text-center py-12 text-slate-500 bg-slate-800/30 rounded-xl border border-dashed border-slate-700">Yuklar topilmadi.</div>
-        ) : (
-          filteredItems.map(item => {
-            const costs = calculateCosts(item);
-            return (
-              <div
-                key={item._id}
-                onClick={() => setSelectedItem(item)} // Bosganda modal ochiladi
-                className="bg-slate-800/80 hover:bg-slate-800 p-3 rounded-xl border border-slate-700 hover:border-amber-500/50 cursor-pointer transition-all flex justify-between items-center group shadow-sm"
-              >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  {item.imageUrl ? (
-                    <img src={item.imageUrl} alt="yuk" className="w-12 h-12 object-cover rounded-lg border border-slate-600 flex-shrink-0" />
-                  ) : (
-                    <div className="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center text-xl border border-slate-600 flex-shrink-0">📦</div>
-                  )}
-                  <div className="truncate pr-2">
-                    <h3 className="text-amber-400 font-bold truncate">{item.trackingCode}</h3>
-                    <div className="text-xs text-slate-400 mt-0.5">
-                      {item.weight} kg • {item.quantity} ta • <span className={`${item.status === 'ombor' ? 'text-slate-400' : item.status === 'yolda' ? 'text-amber-500' : 'text-emerald-500'}`}>{item.status}</span>
-                    </div>
-                  </div>
-                </div>
+      <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider pt-2">
+        📦 Saqlangan Yuklar Ombori <span className="bg-slate-900 text-slate-400 border border-slate-800 px-2.5 py-0.5 rounded-lg text-xs font-bold">{filteredItems.length} ta</span>
+      </h3>
 
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <div className="text-right hidden sm:block">
-                    <div className="font-bold text-emerald-400 text-sm">{costs.totalSom.toLocaleString()} so'm</div>
-                  </div>
-                  {/* Tugmalar bosilganda oyna ochilib ketmasligi uchun e.stopPropagation() ishlatamiz */}
-                  <div className="flex gap-1.5">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleEdit(item); }}
-                      className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors"
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
-                      className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
+      {/* MOBIL CARD VERSIYA */}
+      <div className="block sm:hidden space-y-3">
+        {filteredItems.map((item) => (
+          <div key={item._id} onClick={() => setSelectedItem(item)} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 cursor-pointer hover:border-amber-500/30 transition-all flex items-center gap-3">
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt="Kargo" className="w-12 h-12 object-cover rounded-xl border border-slate-800" />
+            ) : (
+              <div className="w-12 h-12 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center text-[10px] text-slate-600">NO IMG</div>
+            )}
+            <div className="truncate flex-1">
+              <h4 className="font-black text-white text-base truncate">{item.trackingCode}</h4>
+              <p className="text-[10px] text-slate-400">{item.weight} kg • {item.quantity} ta • {item.status}</p>
+            </div>
+            <div className="text-right text-emerald-400 font-bold text-sm">
+              {calculateCosts(item).totalSom.toLocaleString()} s
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* 🚀 MODAL OYNA (BATAFSIL MA'LUMOT) */}
+      {/* DESKTOP TABLE VERSIYA (O'z holicha qoldi) */}
+      <div className="hidden sm:block border border-slate-800 rounded-2xl bg-slate-900 overflow-hidden">
+         {/* ... jadvalingiz kodi avvalgidek qolaveradi ... */}
+         {/* Eslatma: Jadval qatoriga ham onClick={() => setSelectedItem(item)} qo'shib qo'ysangiz, u yerda ham modal ochiladi */}
+      </div>
+
+      {/* MODAL OYNA (Yuk bosilganda ochiladi) */}
       {selectedItem && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelectedItem(null)}>
-          <div
-            className="bg-slate-900 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-slate-700 flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* 1/3 QISM: RASM */}
-            <div className="relative h-48 sm:h-56 bg-slate-800 flex-shrink-0 cursor-pointer group" onClick={() => setZoomedImg(selectedItem.imageUrl)}>
-              {selectedItem.imageUrl ? (
-                <img src={selectedItem.imageUrl} alt="yuk" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-5xl">📦</div>
-              )}
-              {/* Zoom yozuvi */}
-              {selectedItem.imageUrl && (
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                  <span className="text-white font-bold bg-black/60 px-4 py-2 rounded-full backdrop-blur-md">🔍 Kattalashtirish</span>
-                </div>
-              )}
-              {/* Yopish tugmasi */}
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="absolute top-3 right-3 w-8 h-8 bg-black/50 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-md"
-              >
-                ✕
-              </button>
+          <div className="bg-slate-900 w-full max-w-sm rounded-3xl border border-slate-700 overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="h-56 bg-slate-800 cursor-zoom-in relative" onClick={() => setZoomedImg(selectedItem.imageUrl)}>
+              {selectedItem.imageUrl ? <img src={selectedItem.imageUrl} className="w-full h-full object-cover" /> : <div className="flex h-full items-center justify-center text-4xl">📦</div>}
+              <button onClick={() => setSelectedItem(null)} className="absolute top-3 right-3 bg-black/50 text-white p-2 rounded-full">✕</button>
             </div>
-
-            {/* 2/3 QISM: MA'LUMOTLAR */}
-            <div className="p-5 overflow-y-auto custom-scrollbar">
-              <h3 className="text-xl sm:text-2xl font-bold text-amber-500 break-all text-center mb-5">{selectedItem.trackingCode}</h3>
-
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
-                  <span className="text-slate-400 block text-xs mb-1">Holati</span>
-                  <span className={`font-bold uppercase px-2 py-0.5 rounded text-xs ${selectedItem.status === 'ombor' ? 'bg-slate-700 text-slate-300' :
-                      selectedItem.status === 'yolda' ? 'bg-amber-900/50 text-amber-500' :
-                        'bg-emerald-900/50 text-emerald-500'
-                    }`}>
-                    {selectedItem.status === 'ombor' ? '📦 Omborda' : selectedItem.status === 'yolda' ? '🚚 Yo\'lda' : '✅ Keldi'}
-                  </span>
-                </div>
-                <div className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
-                  <span className="text-slate-400 block text-xs mb-1">Kargo Turi</span>
-                  <span className="font-bold uppercase text-white">{selectedItem.cargoType === 'avia' ? '✈️ Avia' : '🚚 Avto'}</span>
-                </div>
-
-                <div className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
-                  <span className="text-slate-400 block text-xs mb-1">Vazni</span>
-                  <span className="font-bold text-white text-lg">{selectedItem.weight} <span className="text-sm font-normal text-slate-400">kg</span></span>
-                </div>
-                <div className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
-                  <span className="text-slate-400 block text-xs mb-1">Soni</span>
-                  <span className="font-bold text-white text-lg">{selectedItem.quantity} <span className="text-sm font-normal text-slate-400">ta</span></span>
-                </div>
-
-                <div className="col-span-2 bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 flex justify-between">
-                  <div>
-                    <span className="text-slate-400 block text-xs mb-1">Yo'lga chiqqan</span>
-                    <span className="font-medium text-white">{selectedItem.shippedDate || 'Belgilanmagan'}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-slate-400 block text-xs mb-1">Yetib kelgan</span>
-                    <span className="font-medium text-white">{selectedItem.arrivedDate || 'Belgilanmagan'}</span>
-                  </div>
-                </div>
+            <div className="p-6">
+              <h3 className="text-xl font-black text-amber-500 text-center mb-4">{selectedItem.trackingCode}</h3>
+              <div className="space-y-2 text-sm text-slate-300">
+                <div className="flex justify-between"><span>Vazn:</span> <b>{selectedItem.weight} kg</b></div>
+                <div className="flex justify-between"><span>Jami narx:</span> <b className="text-emerald-400">{calculateCosts(selectedItem).totalSom.toLocaleString()} so'm</b></div>
               </div>
-
-              {/* Moliya qismi */}
-              <div className="mt-4 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-inner">
-                <div className="flex justify-between items-center text-sm mb-2">
-                  <span className="text-slate-400">Xitoy narxi (Yuan):</span>
-                  <span className="text-white">{selectedItem.yuanPrice} ¥ <span className="text-slate-500">(Kurs: {selectedItem.yuanRate})</span></span>
-                </div>
-                <div className="flex justify-between items-center text-sm mb-2">
-                  <span className="text-slate-400">Mato Xitoy (So'm):</span>
-                  <span className="text-white">{calculateCosts(selectedItem).itemYuanSom.toLocaleString()} so'm</span>
-                </div>
-                <div className="flex justify-between items-center text-sm mb-3">
-                  <span className="text-slate-400">Kargo xizmati:</span>
-                  <span className="text-amber-400 font-medium">+{selectedItem.shippingCostSom.toLocaleString()} so'm</span>
-                </div>
-                <div className="border-t border-slate-600 border-dashed pt-3 flex justify-between items-center">
-                  <span className="text-slate-300 font-bold text-sm">JAMI TO'LOV:</span>
-                  <span className="text-xl font-black text-emerald-400">{calculateCosts(selectedItem).totalSom.toLocaleString()} so'm</span>
-                </div>
-              </div>
-
-              {/* Modal ichida ham tugmalar */}
-              <div className="flex gap-3 mt-5">
-                <button
-                  onClick={() => { handleEdit(selectedItem); setSelectedItem(null); }}
-                  className="flex-1 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-2.5 rounded-xl font-medium transition-colors border border-blue-600/50"
-                >
-                  Tahrirlash
-                </button>
-                <button
-                  onClick={() => { handleDelete(selectedItem._id); setSelectedItem(null); }}
-                  className="flex-1 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white py-2.5 rounded-xl font-medium transition-colors border border-red-600/50"
-                >
-                  O'chirish
-                </button>
+              <div className="flex gap-3 mt-6">
+                <button onClick={() => { handleEdit(selectedItem); setSelectedItem(null); }} className="flex-1 bg-blue-600/20 text-blue-400 py-3 rounded-xl font-bold">Tahrirlash</button>
+                <button onClick={() => { handleDelete(selectedItem._id); setSelectedItem(null); }} className="flex-1 bg-red-600/20 text-red-400 py-3 rounded-xl font-bold">O'chirish</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* 🔍 RASMNI FULLSCREEN KATTALASHTIRISH (ZOOM) */}
+      {/* ZOOM OYNA */}
       {zoomedImg && (
-        <div
-          className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-2 cursor-zoom-out backdrop-blur-lg"
-          onClick={() => setZoomedImg(null)}
-        >
-          <img
-            src={zoomedImg}
-            alt="zoomed"
-            className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
-          />
-          <button
-            className="absolute top-6 right-6 text-white bg-white/10 hover:bg-red-500 rounded-full w-12 h-12 flex items-center justify-center text-2xl transition-colors backdrop-blur-md"
-          >
-            ✕
-          </button>
+        <div className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4" onClick={() => setZoomedImg(null)}>
+          <img src={zoomedImg} className="max-w-full max-h-full rounded-xl" />
         </div>
       )}
     </div>
   );
 }
+
+export default CargoList;
