@@ -48,7 +48,7 @@ const calculateCosts = (item) => {
     const yuanRate = parseFloat(item.yuanRate) || 0;
     const shippingCostSom = parseFloat(item.shippingCostSom) || 0; 
 
-    // Soni (quantity) endi umuman pulga aralashmaydi!
+    // 🚀 TO'G'RILANDI: "Soni" endi pulga mutlaqo ta'sir qilmaydi! 
     const itemYuanSom = yuanPrice * yuanRate;
     const totalSom = itemYuanSom + shippingCostSom; 
     

@@ -206,20 +206,27 @@ function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts,
 
               <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 space-y-3 text-sm text-slate-300">
                 <div className="flex justify-between border-b border-slate-700/50 pb-2">
-                  <span className="text-slate-400">Holati va Turi:</span>
+                  <span className="text-slate-400">Holati va Turi:</span> 
                   <b className="text-white uppercase">{selectedItem.status} • {selectedItem.cargoType}</b>
                 </div>
                 <div className="flex justify-between border-b border-slate-700/50 pb-2">
-                  <span className="text-slate-400">Vazn va Soni:</span>
+                  <span className="text-slate-400">Vazn va Soni:</span> 
                   <b className="text-white">{selectedItem.weight} kg / {selectedItem.quantity} ta</b>
                 </div>
+                
+                {/* 🚀 TO'G'RILANDI: Narxlar alohida-alohida ajratib yozildi */}
                 <div className="flex justify-between border-b border-slate-700/50 pb-2">
-                  <span className="text-slate-400">Pinduoduo / Kargo:</span>
-                  <b className="text-white">{selectedItem.yuanPrice} ¥ / <span className="text-amber-400">{selectedItem.shippingCostSom.toLocaleString()} s</span></b>
+                  <span className="text-slate-400">Pinduoduo (Xitoy narxi):</span> 
+                  <b className="text-white">{selectedItem.yuanPrice} ¥</b>
                 </div>
+                <div className="flex justify-between border-b border-slate-700/50 pb-2">
+                  <span className="text-slate-400">Kargo puli (Yo'l haqi):</span> 
+                  <b className="text-amber-400">{(selectedItem.shippingCostSom || 0).toLocaleString()} so'm</b>
+                </div>
+                
                 <div className="flex justify-between pt-1">
-                  <span className="text-slate-400 font-bold">JAMI TO'LOV:</span>
-                  <b className="text-emerald-400 text-lg font-black">{calculateCosts(selectedItem).totalSom.toLocaleString()} so'm</b>
+                  <span className="text-slate-400 font-bold">JAMI TO'LOV:</span> 
+                  <b className="text-emerald-400 text-xl font-black">{calculateCosts(selectedItem).totalSom.toLocaleString()} so'm</b>
                 </div>
               </div>
 
