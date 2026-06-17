@@ -180,6 +180,7 @@ function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts,
       {selectedItem && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelectedItem(null)}>
           <div className="bg-slate-900 w-full max-w-sm rounded-3xl border border-slate-700 overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            {/* Rasm qismi */}
             <div className="h-56 bg-slate-800 cursor-zoom-in relative group" onClick={() => setZoomedImg(selectedItem.imageUrl)}>
               {selectedItem.imageUrl ? (
                 <img src={selectedItem.imageUrl} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300" />
@@ -187,7 +188,17 @@ function CargoList({ filteredItems, searchQuery, setSearchQuery, calculateCosts,
                 <div className="flex h-full items-center justify-center text-5xl">📦</div>
               )}
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all pointer-events-none"></div>
-              <button onClick={() => setSelectedItem(null)} className="absolute top-3 right-3 bg-black/60 hover:bg-red-500 text-white w-8 h-8 flex items-center justify-center rounded-full transition-colors backdrop-blur-md">✕</button>
+
+              {/* 🚀 TO'G'RILANGAN 'X' TUGMASI (Kattaroq, teparoqda va zoomga ta'sir qilmaydi) */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Mana shu kod rasm ochilib ketishini to'xtatadi!
+                  setSelectedItem(null);
+                }}
+                className="absolute top-2 right-2 bg-black/70 hover:bg-red-500 text-white w-10 h-10 text-lg flex items-center justify-center rounded-full transition-colors backdrop-blur-md z-10"
+              >
+                ✕
+              </button>
             </div>
 
             <div className="p-6">

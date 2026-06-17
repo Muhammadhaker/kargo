@@ -47,12 +47,10 @@ const calculateCosts = (item) => {
     const yuanPrice = parseFloat(item.yuanPrice) || 0;
     const yuanRate = parseFloat(item.yuanRate) || 0;
     const shippingCostSom = parseFloat(item.shippingCostSom) || 0; 
-    const quantity = parseInt(item.quantity) || 1;
 
+    // Soni (quantity) endi umuman pulga aralashmaydi!
     const itemYuanSom = yuanPrice * yuanRate;
-    
-    // 🚀 TO'G'RILANDI: Kargo puli (shippingCostSom) soniga ko'paytirilmaydi, faqat qo'shiladi!
-    const totalSom = (itemYuanSom * quantity) + shippingCostSom;
+    const totalSom = itemYuanSom + shippingCostSom; 
     
     return { itemYuanSom, totalSom };
   };
