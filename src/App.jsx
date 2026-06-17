@@ -43,14 +43,16 @@ function App() {
     }
   };
 
-  const calculateCosts = (item) => {
+const calculateCosts = (item) => {
     const yuanPrice = parseFloat(item.yuanPrice) || 0;
     const yuanRate = parseFloat(item.yuanRate) || 0;
     const shippingCostSom = parseFloat(item.shippingCostSom) || 0; 
     const quantity = parseInt(item.quantity) || 1;
 
     const itemYuanSom = yuanPrice * yuanRate;
-    const totalSom = (itemYuanSom + shippingCostSom) * quantity;
+    
+    // 🚀 TO'G'RILANDI: Kargo puli (shippingCostSom) soniga ko'paytirilmaydi, faqat qo'shiladi!
+    const totalSom = (itemYuanSom * quantity) + shippingCostSom;
     
     return { itemYuanSom, totalSom };
   };
